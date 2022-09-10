@@ -7,14 +7,39 @@
 
 import SwiftUI
 import Firebase
+import Stripe
 
 struct Cart_V: View {
+    var paymentIntentClientSecret: String?
     
     @EnvironmentObject var cartViewModal: Cart_VM
-    @EnvironmentObject var purchaseViewModal: Purchase_VM
     @EnvironmentObject var dataManager: DataManager
+    @State private var isActive: Bool = false
     
     @AppStorage("name") var currentUserName: String?
+                
+    private func startCheckout(completion: @escaping (String?) -> Void) {
+        let url = URL(string: "https://gyros47-b0774.web.app/create-payment-intent")!
+
+        var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.httpBody = try! JSONEncoder().encode(cartViewModal.items)
+                
+                URLSession.shared.dataTask(with: request) { data, response, error in
+                        
+                    guard let data = data, error == nil,
+                          (response as? HTTPURLResponse)?.statusCode == 200
+                    else {
+                        completion(nil)
+                        return
+                    }
+                    
+                    let checkoutIntentResponse = try? JSONDecoder().decode(CheckoutIntentResponse.self, from: data)
+                    completion(checkoutIntentResponse?.clientSecret)
+
+                }.resume()
+    }
     
     var body: some View {
         ZStack{
@@ -26,25 +51,33 @@ struct Cart_V: View {
                     List{
                         ForEach(cartViewModal.items) {item in
                             ListRowView(item: item)
-                                .onTapGesture {
-                                    cartViewModal.updateItem(item: item)
-                                }
+//                                .onTapGesture {
+//                                    cartViewModal.updateItem(item: item)
+//                                }
                         }
                         .onDelete(perform: cartViewModal.deleteItem)
                     }
+                    
                     VStack{
                         Spacer()
-                        Button(
-                            action: {purchaseButtonPressed()},
+                        NavigationLink(
+                            isActive: $isActive,
+                            destination: {
+                                CheckOut_V()},
                             label: {
-                                Text("Complete purchase")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-                                    .frame(height: 55)
-                                    .frame(maxWidth: 350)
-                                    .background(Color.red)
-                                    .cornerRadius(10)
+                                Button(
+                                    action: {
+                                        isActive = true
+                                        purchaseButtonPressed()
+                                    },
+                                    label: {Text("Checkout")
+                                            .font(.title2)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.white)
+                                            .frame(height: 55)
+                                            .frame(maxWidth: 350)
+                                            .background(Color.red)
+                                            .cornerRadius(10)})
                             })
                     }
                 }
@@ -56,13 +89,21 @@ struct Cart_V: View {
     }
     
     func purchaseButtonPressed(){
+        startCheckout { clientSecret in
+            
+            PaymentConfig.shared.paymentIntentClientSecret = clientSecret
+            
+            DispatchQueue.main.async {
+                isActive = true
+            }
+        }
         for item in cartViewModal.items {
-            dataManager.purchaseButtonPressed(i_name: currentUserName ?? "", i_title: item.title, i_ingredients: item.ingredients, i_quantity: item.quantity, i_done: false)
-                
-                
-//                title: item.title,
-//                ingredients: item.ingredients,
-//                quantity: Int(item.quantity))
+            dataManager.purchaseButtonPressed(
+                i_name: currentUserName ?? "",
+                i_title: item.title,
+                i_ingredients: item.ingredients,
+                i_quantity: item.quantity,
+                i_done: false)
         }
     }
 }
@@ -113,10 +154,16 @@ struct ListRowView: View {
             
             Spacer()
             
-            Text (item.price)
+            Text (numberformatter(value: item.price) ?? "")
                 .bold()
         }
         .font(.title3)
         .padding(.vertical, 8)
+    }
+    
+    func numberformatter(value: Double) -> String? {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        return formatter.string(from: NSNumber(value: value))
     }
 }

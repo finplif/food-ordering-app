@@ -20,6 +20,7 @@ struct Boarding_V: View {
     @AppStorage("phone") var currentUserPhone: String?
     @AppStorage("email") var currentUserEmail: String?
     @AppStorage("password") var currentUserPassword: String?
+    @AppStorage("signed_in") var currentUserSignedIn = false
     
     @EnvironmentObject var registrationViewModal: Registration_VM
     
@@ -39,16 +40,20 @@ struct Boarding_V: View {
                     .padding(.horizontal)
                     .background(Color.white)
                     .cornerRadius(10)
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
                 
                 Rectangle()
                     .frame(width: 300, height: 1)
 
-                TextField("Password", text: $password)
+                SecureField("Password", text: $password)
                     .font(.headline)
                     .frame(width: 300, height: 25)
                     .padding(.horizontal)
                     .background(Color.white)
                     .cornerRadius(10)
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
                 
                 Rectangle()
                     .frame(width: 300, height: 1)
@@ -59,7 +64,9 @@ struct Boarding_V: View {
                         guard !email.isEmpty, !password.isEmpty else {
                             return
                         }
-                        registrationViewModal.signIn(email: email, password: password)},
+                        registrationViewModal.signIn(email: email, password: password)
+                        currentUserSignedIn = true
+                    },
                     label: {
                         Text("Login")
                             .font(.headline)

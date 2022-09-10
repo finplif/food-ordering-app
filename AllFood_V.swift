@@ -144,7 +144,7 @@ struct AllFood_V: View {
                         Text("Price")
                             .bold()
                         Spacer()
-                        Text("\(numberformatter(value: card.price * Double(quantity)))")
+                        Text("\(numberformatter(value: card.price * Double(quantity)) ?? "")")
                                 .bold()
                     }
 
@@ -172,15 +172,15 @@ struct AllFood_V: View {
             category: card.category,
             description: card.descrip,
             ingredients: noneed,
-            price: "\(numberformatter(value: card.price * Double(quantity)))",
+            price: card.price * Double(quantity),
+//            price: "\(numberformatter(value: card.price * Double(quantity)))",
             quantity: Int(quantity))
         presentationMode.wrappedValue.dismiss()
     }
 
-    func numberformatter(value: Double) -> String{
+    func numberformatter(value: Double) -> String? {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.maximumFractionDigits = 2
         guard let numberString = formatter.string(from: NSNumber(value: value)) else { return "-" }
         return numberString
     }
@@ -188,7 +188,7 @@ struct AllFood_V: View {
 
 struct AllFoodView_Previews: PreviewProvider {
     static var previews: some View {
-        AllFood_V(card: ItalianBeefFood[1], hero: true)
+        AllFood_V(card: ItalianBeefFood[3], hero: true)
         .environmentObject(Ingredients_VM())
         .environmentObject(Cart_VM())
     }

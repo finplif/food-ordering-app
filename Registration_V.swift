@@ -8,6 +8,7 @@
 import SwiftUI
 import Firebase
 import FirebaseAuth
+import iPhoneNumberField
 
 struct Registration_V: View {
     @State var name = ""
@@ -23,6 +24,7 @@ struct Registration_V: View {
     @AppStorage("phone") var currentUserPhone: String?
     @AppStorage("email") var currentUserEmail: String?
     @AppStorage("password") var currentUserPassword: String?
+    @AppStorage("signed_in") var currentUserSignedIn = false
     
     @EnvironmentObject var registrationViewModal: Registration_VM
     
@@ -83,7 +85,6 @@ extension Registration_V {
                 .background(Color.white)
                 .cornerRadius(10)
                 .disableAutocorrection(true)
-                .autocapitalization(.none)
                 
             Rectangle()
                 .frame(width: 300, height: 1)
@@ -100,7 +101,7 @@ extension Registration_V {
                 .fontWeight(.medium)
                 .padding(.bottom, 25)
             
-            TextField("+1...", text: $phone)
+            iPhoneNumberField("Phone number", text: $phone)
                 .font(.headline)
                 .frame(width: 300, height: 25)
                 .padding(.horizontal)
@@ -184,8 +185,8 @@ extension Registration_V {
                 return
             }
         case 1:
-            guard phone.count == 12 else {
-                showalert(title: "Your phone number should start with +1")
+            guard phone.count >= 10 else {
+                showalert(title: "Your phone number is missing some digits")
                 return
             }
         case 3:
@@ -203,6 +204,7 @@ extension Registration_V {
             currentUserPhone = phone
             currentUserEmail = email
             currentUserPassword = password
+            currentUserSignedIn = true
         } else {
             withAnimation(.spring()) {
                 onboardingState += 1

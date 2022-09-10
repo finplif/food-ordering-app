@@ -60,6 +60,18 @@ struct Account_V: View {
                 Rectangle()
                 .frame(height: 0.5)
                 
+//                HStack{
+//                    Text(currentUserPassword ?? "Your password here")
+//                        .font(.title3)
+//                        .fontWeight(.bold)
+//                    Spacer()
+//                }
+//                .padding(.horizontal, 10)
+//                .frame(height: 60)
+//                
+//                Rectangle()
+//                .frame(height: 0.5)
+                
                 HStack{
                     Text("payment")
                     .font(.title3)

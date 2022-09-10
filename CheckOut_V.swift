@@ -6,48 +6,111 @@
 //
 
 import SwiftUI
+import Stripe
 
 struct CheckOut_V: View {
+    @State private var message: String = ""
+    @State private var isSuccess: Bool = false
+    @State private var paymentMethodParams: STPPaymentMethodParams?
+    let paymentGatewayController = PaymentGatewayController()
+    
+    @EnvironmentObject var cart: Cart_VM
+    @EnvironmentObject var dataManager: DataManager
+    
+    @AppStorage("name") var currentUserName: String?
+    
+    private func pay() {
+        
+        guard let clientSecret = PaymentConfig.shared.paymentIntentClientSecret else {
+            return
+        }
+        
+        let paymentIntentParams = STPPaymentIntentParams(clientSecret: clientSecret)
+        paymentIntentParams.paymentMethodParams = paymentMethodParams
+        
+        paymentGatewayController.submitPayment(intent: paymentIntentParams) { status, intent, error in
+            
+            switch status {
+                case .failed:
+                    message = "Failed"
+                case .canceled:
+                    message = "Cancelled"
+                case .succeeded:
+                    message = "Your payment has been successfully completed!"
+            }
+            
+        }
+        cart.items = []
+    }
+    
     var body: some View {
-        ScrollView{
-            ZStack {
-                Color(#colorLiteral(red: 0.9021687508, green: 0.1747280955, blue: 0.318703413, alpha: 1))
-                    .frame(width: 600, height: 600)
-                    .edgesIgnoringSafeArea(.all)
-                    .cornerRadius(300)
-                    .offset(x: -50, y: -350)
+        VStack {
+            List {
+                ForEach(cart.items) { item in
+                    HStack {
+                        Text("\(String(item.quantity)) x")
+                        Text(item.title)
+                        Spacer()
+                        Text(numberformatter(value: item.price) ?? "")
+                    }
+                }
                 
-                Color(#colorLiteral(red: 0.9617715478, green: 0.1775636971, blue: 0.3371206522, alpha: 1))
-                    .frame(width: 300, height: 300)
-                    .edgesIgnoringSafeArea(.all)
-                    .cornerRadius(300)
-                    .offset(x: -100, y: -250)
-
                 HStack {
-                    Text("Order")
-                        .bold()
-                        .font(.title)
+                    Text("Total:")
+                    Spacer()
+                    Text((numberformatter(value: cart.cartTotal) ?? ""))
+                }
+                
+                Section {
+                    // Stripe Credit Card TextField Here
+                    STPPaymentCardTextField.Representable.init(paymentMethodParams: $paymentMethodParams)
+                } header: {
+                    Text("Payment Information")
+                }
+                
+                HStack {
+                    Button(
+                        action: {
+                            pay()
+                        },
+                        label: {
+                            Text("Complete payment")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .frame(height: 55)
+                                .frame(maxWidth: 350)
+                                .background(Color.red)
+                                .cornerRadius(10)
+                        })
+                    .buttonStyle(.plain)
                     Spacer()
                 }
-                .padding(.all, 20)
-                .foregroundColor(.white)
-                .frame(width: UIScreen.main.bounds.width)
-                .padding(.top, -250)
-                
+                Text(message)
+                    .font(.headline)
             }
-  
-            Text("Work in progress")
-                .bold()
-                .font(.title)
-
-            Spacer()
+            NavigationLink(
+                isActive: $isSuccess,
+                destination: {Confirmation_V()},
+                label: {EmptyView()})
+            .navigationTitle("Checkout")
         }
-        .edgesIgnoringSafeArea(.all)
+    }
+    
+    func numberformatter(value: Double) -> String? {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        return formatter.string(from: NSNumber(value: value))
     }
 }
 
 struct CheckOut_V_Previews: PreviewProvider {
     static var previews: some View {
-        CheckOut_V()
+        NavigationView {
+            CheckOut_V()
+        }
+        .environmentObject(Cart_VM())
+        .environmentObject(DataManager())
     }
 }
+

@@ -13,10 +13,9 @@ struct Cart_M: Identifiable, Codable {
     let title: String
     let category : String
     let description : String
-//    let ingredients : [Ingredients_M]
     let ingredients : [String]
 //    let rate : Int
-    let price : String
+    let price : Double
     let quantity : Int
     let expand : Bool
     
@@ -28,7 +27,7 @@ struct Cart_M: Identifiable, Codable {
 //        ingredients : [Ingredients_M],
         ingredients : [String],
 //        rate : Int,
-        price : String,
+        price : Double,
         quantity : Int,
         expand : Bool)
     {
