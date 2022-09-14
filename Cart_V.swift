@@ -89,14 +89,6 @@ struct Cart_V: View {
     }
     
     func purchaseButtonPressed(){
-        startCheckout { clientSecret in
-            
-            PaymentConfig.shared.paymentIntentClientSecret = clientSecret
-            
-            DispatchQueue.main.async {
-                isActive = true
-            }
-        }
         for item in cartViewModal.items {
             dataManager.purchaseButtonPressed(
                 i_name: currentUserName ?? "",
@@ -105,6 +97,14 @@ struct Cart_V: View {
                 i_quantity: item.quantity,
                 i_done: false)
         }
+        
+        startCheckout { clientSecret in
+            PaymentConfig.shared.paymentIntentClientSecret = clientSecret
+            DispatchQueue.main.async {
+                isActive = true
+            }
+        }
+
     }
 }
 

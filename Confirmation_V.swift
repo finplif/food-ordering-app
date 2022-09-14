@@ -9,7 +9,29 @@ import SwiftUI
 
 struct Confirmation_V: View {
     var body: some View {
-        Text("Payment Completed!")
+        VStack{
+            Text("Payment Completed!")
+            Text("Your order will be ready in 10-15 mins")
+            NavigationLink(
+                destination: {
+                    Home_V()
+                        .navigationBarHidden(true)
+                        .navigationBarBackButtonHidden(true)
+                },
+                label: {
+                    Text("Back to home page")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .frame(height: 55)
+                        .frame(maxWidth: 350)
+                        .background(Color.red)
+                        .cornerRadius(10)
+                })
+            .buttonStyle(.plain)
+        }
+        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
     }
 }
 

@@ -72,6 +72,7 @@ struct CheckOut_V: View {
                     Button(
                         action: {
                             pay()
+                            self.isSuccess.toggle()
                         },
                         label: {
                             Text("Complete payment")
@@ -89,6 +90,7 @@ struct CheckOut_V: View {
                 Text(message)
                     .font(.headline)
             }
+            
             NavigationLink(
                 isActive: $isSuccess,
                 destination: {Confirmation_V()},

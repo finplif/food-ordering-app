@@ -34,9 +34,10 @@ class DataManager: ObservableObject {
                     let title = data["title"] as? String ?? ""
                     let ingredients = data["ingredients"] as? [String] ?? [""]
                     let quantity = data["quantity"] as? Int ?? 0
+                    let paid = data["paid"] as? Bool ?? false
                     let done = data["done"] as? Bool ?? false
                     
-                    let item = Purchase_M(id: id, name: name, title: title, ingredients: ingredients, quantity: quantity, done: done)
+                    let item = Purchase_M(id: id, name: name, title: title, ingredients: ingredients, quantity: quantity, paid: paid, done: done)
                     self.cart.append(item)
                 }
             }
@@ -44,10 +45,10 @@ class DataManager: ObservableObject {
         
     }
     
-    func purchaseButtonPressed(i_name: String, i_title: String, i_ingredients: [String], i_quantity: Int, i_done : Bool) {
+    func purchaseButtonPressed(i_name: String, i_title: String, i_ingredients: [String], i_quantity: Int, i_paid : Bool, i_done : Bool) {
         let db = Firestore.firestore()
         let ref = db.collection("Gyros47").document(i_title)
-        ref.setData(["name": i_name, "title": i_title, "ingredients": i_ingredients, "quantity": i_quantity, "done": i_done]) { error in
+        ref.setData(["name": i_name, "title": i_title, "ingredients": i_ingredients, "quantity": i_quantity, "paid": i_paid, "done": i_done]) { error in
             if let error = error {
                 print(error.localizedDescription)
             }

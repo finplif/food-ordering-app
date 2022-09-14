@@ -11,13 +11,36 @@ struct Home_V: View {
     
     @State var SelectedOption: CategoryBar_M = .ItalianBeef
     @State var CurrentOption: CategoryBar_M = .ItalianBeef
+    @Environment (\.presentationMode) var presentationMode
     
     var body: some View {
-
-// Card View
-
         NavigationView{
             VStack {
+                HStack{
+                    NavigationLink(
+                        destination: Account_V(),
+                        label: {
+                            Image(systemName: "person.fill")
+                                .resizable()
+                                .frame(width: 25, height: 25)
+                                .padding(.top, 15)
+                        })
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    Spacer()
+                    
+                    NavigationLink(
+                        destination: Cart_V(),
+                        label: {
+                            Image(systemName: "cart.fill")
+                                .resizable()
+                                .frame(width: 25, height: 25)
+                                .padding(.top, 15)
+                        })
+                    .buttonStyle(PlainButtonStyle())
+                }
+                .padding(.horizontal, 20)
+                
                 Divider()
                 
                 HStack {
@@ -55,19 +78,24 @@ struct Home_V: View {
                     .coordinateSpace(name: "scroll")
                 }
                 .shadow(radius: 1)
+                HStack{
+                    Button(
+                        action: {
+                            presentationMode.wrappedValue.dismiss()
+                        },
+                        label: {
+                            Image(systemName: "xmark")
+                                .resizable()
+                                .frame(width: 1, height: 1)
+                                .foregroundColor(.white)
+                                .background(Color.white)
+                        })
+                }
+                .navigationBarHidden(true)
+                .navigationBarBackButtonHidden(true)
             }
+            
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(
-                leading:
-                    NavigationLink(
-                        destination: Account_V(),
-                        label: {Image(systemName: "person.fill")})
-                    .buttonStyle(PlainButtonStyle()),
-                trailing:
-                    NavigationLink(
-                        destination: Cart_V(),
-                        label: {Image(systemName: "cart.fill")})
-                    .buttonStyle(PlainButtonStyle()))
         }
     }
 }

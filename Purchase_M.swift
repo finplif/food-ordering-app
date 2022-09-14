@@ -13,6 +13,7 @@ struct Purchase_M: Identifiable, Codable {
     let title: String
     let ingredients : [String]
     let quantity : Int
+    let paid : Bool
     let done : Bool
     
     init(
@@ -21,6 +22,7 @@ struct Purchase_M: Identifiable, Codable {
         title: String,
         ingredients : [String],
         quantity : Int,
+        paid : Bool,
         done : Bool)
     {
         self.id = id
@@ -28,6 +30,7 @@ struct Purchase_M: Identifiable, Codable {
         self.title = title
         self.ingredients = ingredients
         self.quantity = quantity
+        self.paid = paid
         self.done = done
     }
 }

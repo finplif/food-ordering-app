@@ -29,8 +29,8 @@ class Purchase_VM: ObservableObject {
         self.items = savedItems
     }
     
-    func addItem(name: String, title: String, ingredients: [String], quantity: Int, done: Bool) {
-        let newItem = Purchase_M(name: name, title: title, ingredients: ingredients, quantity: quantity, done: false)
+    func addItem(name: String, title: String, ingredients: [String], quantity: Int, paid: Bool, done: Bool) {
+        let newItem = Purchase_M(name: name, title: title, ingredients: ingredients, quantity: quantity, paid: paid, done: false)
         items.append(newItem)
     }
     

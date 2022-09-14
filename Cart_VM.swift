@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 class Cart_VM: ObservableObject {
-    @Published var items: [Cart_M] = [] {
+    @Published var items: [Cart_M] = [Cart_M]() {
         didSet {
             saveItems()
         }
@@ -64,3 +64,5 @@ class Cart_VM: ObservableObject {
         }
     }
 }
+
+
