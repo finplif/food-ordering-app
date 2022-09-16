@@ -29,18 +29,28 @@ struct CheckOut_V: View {
         paymentIntentParams.paymentMethodParams = paymentMethodParams
         
         paymentGatewayController.submitPayment(intent: paymentIntentParams) { status, intent, error in
-            
             switch status {
                 case .failed:
                     message = "Failed"
                 case .canceled:
                     message = "Cancelled"
                 case .succeeded:
-                    message = "Your payment has been successfully completed!"
+                    message = "Succeeded"
             }
-            
+
+            if (message == "Succeeded") {
+                for item in cart.items {
+                    dataManager.purchaseButtonPressed(
+                        i_name: currentUserName ?? "",
+                        i_title: item.title,
+                        i_ingredients: item.ingredients,
+                        i_quantity: item.quantity,
+                        i_paid: true,
+                        i_done: false)
+                }
+                self.isSuccess.toggle()
+            }
         }
-        cart.items = []
     }
     
     var body: some View {
@@ -64,18 +74,16 @@ struct CheckOut_V: View {
                 Section {
                     // Stripe Credit Card TextField Here
                     STPPaymentCardTextField.Representable.init(paymentMethodParams: $paymentMethodParams)
-                } header: {
-                    Text("Payment Information")
-                }
-                
-                HStack {
+                    
+                    Text(message)
+                        .font(.headline)
+                    
                     Button(
                         action: {
                             pay()
-                            self.isSuccess.toggle()
                         },
                         label: {
-                            Text("Complete payment")
+                            Text("Complete card payment")
                                 .font(.title2)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
@@ -85,11 +93,48 @@ struct CheckOut_V: View {
                                 .cornerRadius(10)
                         })
                     .buttonStyle(.plain)
-                    Spacer()
+                } header: {
+                    Text("Payment Information")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.black)
                 }
-                Text(message)
-                    .font(.headline)
+                
+                Section {
+                    Button(
+                        action: {
+                            for item in cart.items {
+                                dataManager.purchaseButtonPressed(
+                                    i_name: currentUserName ?? "",
+                                    i_title: item.title,
+                                    i_ingredients: item.ingredients,
+                                    i_quantity: item.quantity,
+                                    i_paid: false,
+                                    i_done: false)
+                            }
+                            self.isSuccess.toggle()
+                        },
+                        label: {
+                            Text("Yes, I'll pay in person")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .frame(height: 55)
+                                .frame(maxWidth: 350)
+                                .background(Color.red)
+                                .cornerRadius(10)
+                        })
+                    .buttonStyle(.plain)
+                } header: {
+                    Text("Want to pay with cash?")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.black)
+                }
+                
+                
             }
+            .listStyle(.plain)
             
             NavigationLink(
                 isActive: $isSuccess,

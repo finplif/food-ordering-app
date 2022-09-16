@@ -10,6 +10,7 @@ import Firebase
 import Stripe
 
 struct Cart_V: View {
+    
     var paymentIntentClientSecret: String?
     
     @EnvironmentObject var cartViewModal: Cart_VM
@@ -22,23 +23,23 @@ struct Cart_V: View {
         let url = URL(string: "https://gyros47-b0774.web.app/create-payment-intent")!
 
         var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                request.httpBody = try! JSONEncoder().encode(cartViewModal.items)
-                
-                URLSession.shared.dataTask(with: request) { data, response, error in
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try! JSONEncoder().encode(cartViewModal.items)
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
                         
-                    guard let data = data, error == nil,
-                          (response as? HTTPURLResponse)?.statusCode == 200
-                    else {
-                        completion(nil)
-                        return
-                    }
+        guard let data = data, error == nil,
+            (response as? HTTPURLResponse)?.statusCode == 200
+        else {
+            completion(nil)
+            return
+        }
                     
-                    let checkoutIntentResponse = try? JSONDecoder().decode(CheckoutIntentResponse.self, from: data)
-                    completion(checkoutIntentResponse?.clientSecret)
-
-                }.resume()
+        let checkoutIntentResponse = try? JSONDecoder().decode(CheckoutIntentResponse.self, from: data)
+        completion(checkoutIntentResponse?.clientSecret)
+        }
+        task.resume()
     }
     
     var body: some View {
@@ -89,22 +90,21 @@ struct Cart_V: View {
     }
     
     func purchaseButtonPressed(){
-        for item in cartViewModal.items {
-            dataManager.purchaseButtonPressed(
-                i_name: currentUserName ?? "",
-                i_title: item.title,
-                i_ingredients: item.ingredients,
-                i_quantity: item.quantity,
-                i_done: false)
-        }
-        
         startCheckout { clientSecret in
             PaymentConfig.shared.paymentIntentClientSecret = clientSecret
             DispatchQueue.main.async {
                 isActive = true
             }
         }
-
+//        for item in cartViewModal.items {
+//            dataManager.purchaseButtonPressed(
+//                i_name: currentUserName ?? "",
+//                i_title: item.title,
+//                i_ingredients: item.ingredients,
+//                i_quantity: item.quantity,
+//                i_paid: false,
+//                i_done: false)
+//        }
     }
 }
 
