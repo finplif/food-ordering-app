@@ -42,7 +42,6 @@ class DataManager: ObservableObject {
                 }
             }
         }
-        
     }
     
     func purchaseButtonPressed(i_name: String, i_title: String, i_ingredients: [String], i_quantity: Int, i_paid : Bool, i_done : Bool) {

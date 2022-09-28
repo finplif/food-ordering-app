@@ -11,22 +11,19 @@ import FirebaseAuth
 import iPhoneNumberField
 
 struct Registration_V: View {
+    
+    @ObservedObject var registrationViewModal: Registration_VM
+    let didCompleteLoginProcess: () -> ()
     @State var name = ""
     @State var phone = ""
     @State var email = ""
     @State var password = ""
+    @State private var spassword = ""
+    @State var loginStatusMessage = ""
     @State var alertTitle : String = ""
     @State var showAlert : Bool = false
-    
+    @State var LogOutOptions = false
     @State var onboardingState: Int = 0
-    
-    @AppStorage("name") var currentUserName: String?
-    @AppStorage("phone") var currentUserPhone: String?
-    @AppStorage("email") var currentUserEmail: String?
-    @AppStorage("password") var currentUserPassword: String?
-    @AppStorage("signed_in") var currentUserSignedIn = false
-    
-    @EnvironmentObject var registrationViewModal: Registration_VM
     
     var body: some View {
         ZStack {
@@ -38,8 +35,6 @@ struct Registration_V: View {
                     phoneSection
                 case 2:
                     emailSection
-                case 3:
-                    passwordSection
                 default:
                     Home_V()
                 }
@@ -120,7 +115,7 @@ extension Registration_V {
     private var emailSection: some View {
         VStack{
             Spacer()
-            Text("What's your email?")
+            Text("Create your email and password?")
                 .font(.largeTitle)
                 .fontWeight(.medium)
                 .padding(.bottom, 25)
@@ -137,19 +132,7 @@ extension Registration_V {
             Rectangle()
                 .frame(width: 300, height: 1)
             
-            Spacer()
-            Spacer()
-        }
-    }
-    private var passwordSection: some View {
-        VStack{
-            Spacer()
-            Text("Set up a password")
-                .font(.largeTitle)
-                .fontWeight(.medium)
-                .padding(.bottom, 25)
-            
-            TextField("Password", text: $password)
+            SecureField("Password", text: $password)
                 .font(.headline)
                 .frame(width: 300, height: 25)
                 .padding(.horizontal)
@@ -161,15 +144,17 @@ extension Registration_V {
             Rectangle()
                 .frame(width: 300, height: 1)
             
-//            SecureField("Password", text: $password)
-//                .font(.headline)
-//                .frame(width: 300, height: 25)
-//                .padding(.horizontal)
-//                .background(Color.white)
-//                .cornerRadius(10)
-//
-//            Rectangle()
-//                .frame(width: 300, height: 1)
+            SecureField("Password", text: $spassword)
+                .font(.headline)
+                .frame(width: 300, height: 25)
+                .padding(.horizontal)
+                .background(Color.white)
+                .cornerRadius(10)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+
+            Rectangle()
+                .frame(width: 300, height: 1)
             
             Spacer()
             Spacer()
@@ -189,22 +174,19 @@ extension Registration_V {
                 showalert(title: "Your phone number is missing some digits")
                 return
             }
-        case 3:
-            guard password.count >= 7 else {
-                showalert(title: "Your password must be longer than 7 characters")
+        case 2:
+            guard password == spassword || password.count >= 7 else {
+                showalert(title: "Your passwords either don't match or must be longer than 7 characters")
                 return
             }
+
         default:
             break
         }
         
-        if (onboardingState == 3) {
-            registrationViewModal.signUp(email: email, password: password)
-            currentUserName = name
-            currentUserPhone = phone
-            currentUserEmail = email
-            currentUserPassword = password
-            currentUserSignedIn = true
+        if (onboardingState == 2) {
+            registrationViewModal.signUp(email: email, password: password, name: name, phone: phone)
+            registrationViewModal.storeUserInformation()
         } else {
             withAnimation(.spring()) {
                 onboardingState += 1
@@ -220,6 +202,7 @@ extension Registration_V {
 
 struct Registration_V_Previews: PreviewProvider {
     static var previews: some View {
-        Registration_V()
+        Registration_V(registrationViewModal: Registration_VM(), didCompleteLoginProcess: {})
     }
 }
+

@@ -9,13 +9,7 @@ import SwiftUI
 
 struct Account_V: View {
     @Environment(\.presentationMode) var presentationMode
-    
-    @AppStorage("name") var currentUserName: String?
-    @AppStorage("phone") var currentUserPhone: String?
-    @AppStorage("email") var currentUserEmail: String?
-    @AppStorage("password") var currentUserPassword: String?
-    
-    @EnvironmentObject var registrationViewModal: Registration_VM
+    @ObservedObject var registrationViewModal: Registration_VM
     
     var body: some View {
         NavigationView{
@@ -25,7 +19,7 @@ struct Account_V: View {
                 .padding(.top, 5)
                 
                 HStack{
-                    Text(currentUserName ?? "Your name here")
+                    Text(registrationViewModal.user?.name ?? "Your name here")
                         .font(.title3)
                         .fontWeight(.bold)
                     Spacer()
@@ -37,7 +31,7 @@ struct Account_V: View {
                 .frame(height: 0.5)
                 
                 HStack{
-                    Text(currentUserPhone ?? "Your phone here")
+                    Text(registrationViewModal.user?.phone ?? "Your phone here")
                     .font(.title3)
                     .fontWeight(.bold)
                     Spacer()
@@ -49,7 +43,7 @@ struct Account_V: View {
                 .frame(height: 0.5)
                 
                 HStack{
-                    Text(currentUserEmail ?? "Your email here")
+                    Text(registrationViewModal.user?.email ?? "Your email here")
                         .font(.title3)
                         .fontWeight(.bold)
                     Spacer()
@@ -72,18 +66,6 @@ struct Account_V: View {
 //                Rectangle()
 //                .frame(height: 0.5)
                 
-                HStack{
-                    Text("payment")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    Spacer()
-                }
-                .padding(.horizontal, 10)
-                .frame(height: 60)
-                
-                Rectangle()
-                    .frame(height: 0.5)
-                
                 Text("Log Out")
                 .foregroundColor(.white)
                 .font(.headline)
@@ -93,6 +75,7 @@ struct Account_V: View {
                 .padding(.top, 10)
                 .onTapGesture {
                     registrationViewModal.signOut()
+//                    currentUserSignedIn.toggle()
                 }
             }
             .navigationTitle("Account Information")
@@ -103,6 +86,6 @@ struct Account_V: View {
 
 struct Account_Previews: PreviewProvider {
     static var previews: some View {
-        Account_V()
+        Account_V(registrationViewModal: Registration_VM())
     }
 }

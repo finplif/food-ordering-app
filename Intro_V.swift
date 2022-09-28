@@ -8,13 +8,11 @@
 import SwiftUI
 
 struct Intro_V: View {
-    
-    @AppStorage("signed_in") var currentUserSignedIn = false
     @EnvironmentObject var registrationViewModal: Registration_VM
     
     var body: some View {
         ZStack {
-            if registrationViewModal.signedIn || currentUserSignedIn {
+            if registrationViewModal.signedIn || registrationViewModal.userIsAuthenticatedAndSynced {
                     Home_V()
                         .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .top)))
             } else {
@@ -22,9 +20,9 @@ struct Intro_V: View {
                     .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .bottom)))
             }
         }
-        .onAppear{
-            registrationViewModal.signedIn = registrationViewModal.isSignedIn
-        }
+//        .onAppear{
+//            registrationViewModal.signedIn = registrationViewModal.isSignedIn
+//        }
     }
 }
 

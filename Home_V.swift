@@ -18,7 +18,7 @@ struct Home_V: View {
             VStack {
                 HStack{
                     NavigationLink(
-                        destination: Account_V(),
+                        destination: Account_V(registrationViewModal: Registration_VM()),
                         label: {
                             Image(systemName: "person.fill")
                                 .resizable()

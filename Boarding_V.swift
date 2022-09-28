@@ -8,21 +8,24 @@
 import SwiftUI
 import UIKit
 import Firebase
+import FirebaseCore
+import FirebaseFirestore
+import FirebaseAuth
 
 struct Boarding_V: View {
-    @State var email = ""
-    @State var password = ""
+    @EnvironmentObject var registrationViewModal: Registration_VM
+    
+    @State private var email = ""
+    @State private var password = ""
     
     @State var alertTitle : String = ""
     @State var showAlert : Bool = false
     
-    @AppStorage("name") var currentUserName: String?
-    @AppStorage("phone") var currentUserPhone: String?
-    @AppStorage("email") var currentUserEmail: String?
-    @AppStorage("password") var currentUserPassword: String?
-    @AppStorage("signed_in") var currentUserSignedIn = false
-    
-    @EnvironmentObject var registrationViewModal: Registration_VM
+//    @AppStorage("name") var currentUserName: String?
+//    @AppStorage("phone") var currentUserPhone: String?
+//    @AppStorage("email") var currentUserEmail: String?
+//    @AppStorage("password") var currentUserPassword: String?
+//    @AppStorage("signed_in") var currentUserSignedIn = false
     
     var body: some View {
 
@@ -65,10 +68,9 @@ struct Boarding_V: View {
                             return
                         }
                         registrationViewModal.signIn(email: email, password: password)
-                        currentUserSignedIn = true
                     },
                     label: {
-                        Text("Login")
+                        Text("Sign In")
                             .font(.headline)
                             .foregroundColor(.white)
                             .frame(height: 55)
@@ -82,7 +84,7 @@ struct Boarding_V: View {
                 Text("If you don't have an account")
                     .padding(.top, 50)
                 NavigationLink(
-                    destination: Registration_V(),
+                    destination: Registration_V(registrationViewModal: Registration_VM(), didCompleteLoginProcess: {}),
                     label: {
                         Text("Sign Up")
                             .font(.headline)
