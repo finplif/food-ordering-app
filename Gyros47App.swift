@@ -46,5 +46,3 @@ struct Gyros47App: App {
       }
     }
 }
-
-

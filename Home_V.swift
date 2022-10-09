@@ -12,13 +12,14 @@ struct Home_V: View {
     @State var SelectedOption: CategoryBar_M = .ItalianBeef
     @State var CurrentOption: CategoryBar_M = .ItalianBeef
     @Environment (\.presentationMode) var presentationMode
+    @EnvironmentObject var registrationViewModal: Registration_VM
     
     var body: some View {
         NavigationView{
             VStack {
                 HStack{
                     NavigationLink(
-                        destination: Account_V(registrationViewModal: Registration_VM()),
+                        destination: Account_V(),
                         label: {
                             Image(systemName: "person.fill")
                                 .resizable()
@@ -78,24 +79,28 @@ struct Home_V: View {
                     .coordinateSpace(name: "scroll")
                 }
                 .shadow(radius: 1)
-                HStack{
-                    Button(
-                        action: {
-                            presentationMode.wrappedValue.dismiss()
-                        },
-                        label: {
-                            Image(systemName: "xmark")
-                                .resizable()
-                                .frame(width: 1, height: 1)
-                                .foregroundColor(.white)
-                                .background(Color.white)
-                        })
-                }
-                .navigationBarHidden(true)
-                .navigationBarBackButtonHidden(true)
+//                HStack{
+//                    Button(
+//                        action: {
+//                            presentationMode.wrappedValue.dismiss()
+//                        },
+//                        label: {
+//                            Image(systemName: "xmark")
+//                                .resizable()
+//                                .frame(width: 1, height: 1)
+//                                .foregroundColor(.white)
+//                                .background(Color.white)
+//                        })
+//                }
             }
-            
+            .navigationBarHidden(true)
             .navigationBarTitleDisplayMode(.inline)
+//            .fullScreenCover(isPresented: $registrationViewModal.signedIn, onDismiss: nil) {
+//                Boarding_V(didCompleteLoginProcess: {
+//                    self.registrationViewModal.signedIn = false
+//                    self.registrationViewModal.fetchCurrentUser()
+//                })
+//            }
         }
     }
 }

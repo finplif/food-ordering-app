@@ -16,8 +16,7 @@ struct CheckOut_V: View {
     
     @EnvironmentObject var cart: Cart_VM
     @EnvironmentObject var dataManager: DataManager
-    
-    @AppStorage("name") var currentUserName: String?
+    @EnvironmentObject var registrationViewModal: Registration_VM
     
     private func pay() {
         
@@ -41,7 +40,7 @@ struct CheckOut_V: View {
             if (message == "Succeeded") {
                 for item in cart.items {
                     dataManager.purchaseButtonPressed(
-                        i_name: currentUserName ?? "",
+                        i_name: registrationViewModal.user?.name ?? "",
                         i_title: item.title,
                         i_ingredients: item.ingredients,
                         i_quantity: item.quantity,
@@ -49,6 +48,7 @@ struct CheckOut_V: View {
                         i_done: false)
                 }
                 self.isSuccess.toggle()
+                cart.items = []
             }
         }
     }
@@ -105,7 +105,7 @@ struct CheckOut_V: View {
                         action: {
                             for item in cart.items {
                                 dataManager.purchaseButtonPressed(
-                                    i_name: currentUserName ?? "",
+                                    i_name: registrationViewModal.user?.name ?? "",
                                     i_title: item.title,
                                     i_ingredients: item.ingredients,
                                     i_quantity: item.quantity,
@@ -113,6 +113,7 @@ struct CheckOut_V: View {
                                     i_done: false)
                             }
                             self.isSuccess.toggle()
+                            cart.items = []
                         },
                         label: {
                             Text("Yes, I'll pay in person")
@@ -131,8 +132,6 @@ struct CheckOut_V: View {
                         .fontWeight(.bold)
                         .foregroundColor(.black)
                 }
-                
-                
             }
             .listStyle(.plain)
             

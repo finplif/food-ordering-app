@@ -9,10 +9,11 @@ import SwiftUI
 
 struct Account_V: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var registrationViewModal: Registration_VM
+    @ObservedObject var registrationViewModal = Registration_VM()
+    @EnvironmentObject var registrationvm: Registration_VM
     
     var body: some View {
-        NavigationView{
+//        NavigationView{
             ScrollView {
                 Rectangle()
                 .frame(height: 0.5)
@@ -66,26 +67,42 @@ struct Account_V: View {
 //                Rectangle()
 //                .frame(height: 0.5)
                 
-                Text("Log Out")
-                .foregroundColor(.white)
-                .font(.headline)
-                .frame(width: 300, height: 55)
-                .background(Color.black)
-                .cornerRadius(10)
-                .padding(.top, 10)
-                .onTapGesture {
-                    registrationViewModal.signOut()
-//                    currentUserSignedIn.toggle()
-                }
+                Button(
+                    action: {
+                        registrationvm.signOut()
+                        print(registrationvm.signedIn)
+                        print("logggy out button pressed")
+                },
+                    label: {
+                        Text("Log Out")
+                        .foregroundColor(.white)
+                        .font(.headline)
+                        .frame(width: 300, height: 55)
+                        .background(Color.black)
+                        .cornerRadius(10)
+                        .padding(.top, 10)
+                    })
+//
+//                Text("Log Out")
+//                .foregroundColor(.white)
+//                .font(.headline)
+//                .frame(width: 300, height: 55)
+//                .background(Color.black)
+//                .cornerRadius(10)
+//                .padding(.top, 10)
+//                .onTapGesture {
+//                    registrationViewModal.signOut()
+//                    print("logggyy out button pressed")
+//                }
             }
             .navigationTitle("Account Information")
             .navigationBarTitleDisplayMode(.inline)
-        }
+//        }
     }
 }
 
 struct Account_Previews: PreviewProvider {
     static var previews: some View {
-        Account_V(registrationViewModal: Registration_VM())
+        Account_V()
     }
 }
