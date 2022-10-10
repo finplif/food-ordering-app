@@ -81,6 +81,7 @@ struct CheckOut_V: View {
                     Button(
                         action: {
                             pay()
+                            print("pay button was pressed")
                         },
                         label: {
                             Text("Complete card payment")

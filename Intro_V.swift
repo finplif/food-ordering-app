@@ -22,7 +22,7 @@ struct Intro_V: View {
                     Home_V()
 //                        .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .top)))
             } else {
-                Boarding_V()
+                Registration_V()
 //                    .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .bottom)))
             }
         }

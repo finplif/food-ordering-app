@@ -54,7 +54,6 @@ class Registration_VM: ObservableObject {
     }
     
     func signOut() {
-        
         try? auth.signOut()
         self.signedIn = false
     }
