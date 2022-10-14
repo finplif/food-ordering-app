@@ -24,7 +24,6 @@ struct Cart_M: Identifiable, Codable {
         title: String,
         category : String,
         description : String,
-//        ingredients : [Ingredients_M],
         ingredients : [String],
 //        rate : Int,
         price : Double,

@@ -23,7 +23,7 @@ struct Ingredients_V: View {
                 .foregroundColor(item.needed ? Color.green : Color.red)
                 .onTapGesture {
                     self.item.needed.toggle()
-                    noneed.append("no \(item.title)")
+                    noneed.append(item.title)
                 }
 
             Text(item.title)

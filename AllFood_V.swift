@@ -13,6 +13,7 @@ struct AllFood_V: View {
     @State var quantityprice = 0
     @State var card : AllFood_M
     @State var hero : Bool
+    @State var non : Array<String> = []
     @State var noneed : Array<String> = []
 //    @State var heart = "heart.fill"
     
@@ -115,13 +116,12 @@ struct AllFood_V: View {
 
                     VStack {
                         ForEach(card.ingredients) {ingredient in
-                            Ingredients_V(item: ingredient, noneed: $noneed)
+                            Ingredients_V(item: ingredient, noneed: $non)
                         }
                     }
                 }
                 .padding(.horizontal)
                 .frame(width: 390)
-//                .background(Color(hue: 1.0, saturation: 0.0, brightness: 0.909))
 
                 Divider()
                 
@@ -166,14 +166,28 @@ struct AllFood_V: View {
         }
     }
 
+
+    
     func cartButtonPressed(){
+        var counts: [String: Int] = [:]
+
+        for item in non {
+            counts[item] = (counts[item] ?? 0) + 1
+        }
+
+        for (key, value) in counts {
+            if ((counts[key] ?? 0) % 2 == 1) {
+                noneed.append("no \(key)")
+            }
+            print("\(key) occurs \(value) time(s)")
+        }
+        
         cartViewModal.addItem(
             title: card.title,
             category: card.category,
             description: card.descrip,
             ingredients: noneed,
             price: card.price * Double(quantity),
-//            price: "\(numberformatter(value: card.price * Double(quantity)))",
             quantity: Int(quantity))
         presentationMode.wrappedValue.dismiss()
     }

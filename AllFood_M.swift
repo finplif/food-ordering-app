@@ -15,7 +15,7 @@ struct AllFood_M : Identifiable {
     let descrip : String
     let stars : Int
     let price : Double
-    let ingredients : [Ingredients_M]
+    var ingredients : [Ingredients_M]
     let expand : Bool
 }
 
@@ -27,9 +27,9 @@ var PickedFood: [AllFood_M] = [
           stars: 1,
           price: 12.99,
           ingredients: [
-        Ingredients_M(title: "ingredient", needed: true),
-        Ingredients_M(title: "ingredient", needed: true),
-        Ingredients_M(title: "ingredient", needed: true),
+        Ingredients_M(title: "ingredient1", needed: true),
+        Ingredients_M(title: "ingredient2", needed: true),
+        Ingredients_M(title: "ingredient3", needed: true),
         ],
           expand: false),
     

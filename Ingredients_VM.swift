@@ -9,12 +9,11 @@ import Foundation
 import SwiftUI
 
 class Ingredients_VM: ObservableObject {
-    @Published var ingredients: [Ingredients_M] = []
-//    {
-//        didSet {
-//            saveItems()
-//        }
-//    }
+    @Published var ingredients: [Ingredients_M] = [] {
+        didSet {
+            saveItems()
+        }
+    }
     
     let itemsKey: String = "items_list"
     
@@ -28,7 +27,7 @@ class Ingredients_VM: ObservableObject {
             let data = UserDefaults.standard.data(forKey: itemsKey),
             let savedItems = try? JSONDecoder().decode([Ingredients_M].self, from: data)
         else { return }
-        
+
         self.ingredients = savedItems
     }
     

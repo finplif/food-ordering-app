@@ -22,7 +22,7 @@ struct Ingredients_M: Identifiable, Codable {
     }
 
     func updateCompletetion() -> Ingredients_M {
-        return Ingredients_M(id: id, title: title, needed: !needed)
+        return Ingredients_M(id: id, title: title, needed: false)
     }
 }
 

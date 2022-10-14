@@ -96,15 +96,6 @@ struct Cart_V: View {
                 isActive = true
             }
         }
-//        for item in cartViewModal.items {
-//            dataManager.purchaseButtonPressed(
-//                i_name: currentUserName ?? "",
-//                i_title: item.title,
-//                i_ingredients: item.ingredients,
-//                i_quantity: item.quantity,
-//                i_paid: false,
-//                i_done: false)
-//        }
     }
 }
 
